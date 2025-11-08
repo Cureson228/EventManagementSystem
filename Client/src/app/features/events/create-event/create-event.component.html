@@ -1,0 +1,133 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+  <div class="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Create Event</h2>
+    <p class="text-gray-500 mb-6">Fill in the details to plan your new event.</p>
+
+    <form class="space-y-6" [formGroup]="form" (submit)="onSubmit()">
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Event Title <span class="text-red-500">*</span></label>
+        <input
+          formControlName = "title"
+          type="text"
+          placeholder="e.g., AI & Future Conference"
+          class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"/>
+         <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="hasDisplayableError('title') && form.controls.title.hasError('required')">
+            Please enter the title
+         </div>
+      </div>
+
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Description <span class="text-red-500">*</span></label>
+        <textarea
+          formControlName = "description"
+          rows="4"
+          placeholder="Describe what this event is about..."
+          class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+           <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="hasDisplayableError('description') && form.controls.description.hasError('required')">
+            Please enter the description
+         </div>
+      </div>
+
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Date <span class="text-red-500">*</span></label>
+          <input
+            formControlName="date"
+            type="date"
+            class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+           <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="hasDisplayableError('date') && form.controls.date.hasError('required')">
+            Please choose the date
+         </div>
+          <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="form.hasError('pastDate')">
+            Date cannot be in the past
+         </div>
+        </div>
+        
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Time <span class="text-red-500">*</span></label>
+            <div class="flex items-center gap-2">
+            <input
+                type="number"
+                name="hours"
+                appNumberRange="hours"
+                placeholder="HH"
+                formControlName="hours"
+                class="w-20 px-3 py-2 border rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+            <span class="text-gray-600 text-lg font-semibold">:</span>
+            <input
+                type="number"
+                name="minutes"
+                appNumberRange="minutes"
+                placeholder="MM"
+                formControlName="minutes"
+                class="w-20 px-3 py-2 border rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+            </div>
+            <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="hasDisplayableError('hours') && form.controls.hours.hasError('required')
+            && hasDisplayableError('minutes') && form.controls.minutes.hasError('required')">
+            Please select the time
+         </div>
+        </div>
+
+        
+      </div>
+
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1" >Location <span class="text-red-500">*</span></label>
+        <input
+          formControlName="location"
+          type="text"
+          placeholder="e.g., Innovation Hub, Berlin"
+          class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"/>
+          <div class="border-red-500 text-red-500 focus:ring-red-300 mt-2 text-sm" *ngIf="hasDisplayableError('location') && form.controls.location.hasError('required')">
+            Please enter the location
+         </div>
+      </div>
+
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Capacity (optional)</label>
+        <input
+          formControlName="capacity"
+          type="number"
+          min="0"
+          placeholder="Leave empty for unlimited"
+          class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"/>
+        <p class="text-xs text-gray-400 mt-1">Maximum number of participants.</p>
+      </div>
+
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-2">Visibility</label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="radio" name="visibility" formControlName="visibility" value="true" checked class="text-indigo-600 focus:ring-indigo-500" />
+            <span>Public — anyone can join</span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="radio" name="visibility" formControlName="visibility" value="false" class="text-indigo-600 focus:ring-indigo-500" />
+            <span>Private — invite only</span>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button
+          type="button"
+          class="px-5 py-2 rounded-xl border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium transition">
+          Cancel
+        </button>
+        <button type="submit"
+          class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50">
+          Create Event
+         
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+
+<div *ngIf="isLoading" class="text-center text-gray-500 mt-10">
+  Loading event details...
+</div>
+
+<div *ngIf="!isLoading && event" class="event-card bg-white shadow-md rounded-2xl p-8 max-w-5xl mx-auto mt-8">
+
+
+<button
+  class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium py-6"
+  (click)="goBack()">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+       class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+    <path fill-rule="evenodd"
+          d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
+  </svg>
+  <span>Back</span>
+</button>
+
+
+  <h2 class="text-3xl font-bold mb-4 text-green-700">{{ event.title }}</h2>
+  <p class="text-gray-700 mb-6">{{ event.description }}</p>
+
+  <div class="flex flex-col lg:flex-row justify-between gap-10 mb-8">
+
+    <div class="flex-1 space-y-2 text-gray-600">
+ <div class="flex items-center"> 
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                   <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+                   <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+               </svg> 
+               <span class="px-2">{{ event.dateTime | date:'d MMMM y' }}</span>
+             </div>
+ 
+             <div class="flex items-center">
+               
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                 <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                 <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+               </svg>
+               
+               <span class="px-2">{{ event.dateTime | date: 'HH:mm' }}</span>
+             
+             
+             </div>
+             <div class="flex items-center">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                </svg>
+                <span class="px-2">{{ event.location }}</span>
+               
+               </div>
+             <div class="flex items-center">
+              
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                </svg>
+        
+        
+       <span class="px-2"> {{ event.participants.length }} 
+        @if (event.capacity != null){
+            / {{ event.capacity }}
+        }</span>
+        </div>
+    </div>
+
+    <!-- СПРАВА -->
+     
+    <div class="w-full lg:w-1/3 flex flex-col justify-start items-stretch gap-4 py-3">
+
+
+      @if(!isOrganizer){
+
+        <button class="text-white font-semibold py-2 rounded-xl transition"
+        [ngClass]="{
+          'bg-red-700 hover:bg-red-500' : isJoined,
+          'bg-green-600 hover:bg-green-700' : !isJoined  
+        }" (click)="!isJoined ? joinEvent() : leaveEvent() ">
+          
+          {{ isJoined  ? 'Leave' : 'Join'  }}
+        </button>
+      }  
+      @if(isOrganizer){
+
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition" [routerLink]="['/event', event.id, 'edit']">
+            Edit Event
+        </button>
+
+        <button
+        (click)="openConfirmModal()"
+         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-xl transition">
+            Delete Event
+        </button>
+        <div *ngIf="showConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
+          <h2 class="text-lg font-semibold text-gray-800 mb-3">Are you sure?</h2>
+          <p class="text-gray-500 mb-6">Do you really want to delete this event? This action cannot be undone.</p>
+          <div class="flex justify-end gap-3">
+            <button
+              (click)="showConfirm = false"
+              class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md">
+              Cancel
+            </button>
+            <button
+              (click)="confirmDelete()"
+              class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+        
+      }
+
+    </div>
+
+  </div>
+  <div>
+    <h3 class="text-lg font-semibold mb-3">Participants:</h3>
+    <div class="grid gap-3">
+      <div *ngFor="let p of event.participants" class="participant">
+        <span class="text-green-600 font-semibold">{{ p.fullName }}</span>
+        <span class="text-sm text-gray-500">— joined {{ p.joinedAt | date: 'short' }}</span>
+      </div>
+    </div>
+   
+    
+  </div>
+</div>
