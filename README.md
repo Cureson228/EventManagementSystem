@@ -60,4 +60,4 @@ docker compose logs api -f
 🧩 Author
 
 Author: Bohdan Ratushnyi
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/Cureson228
