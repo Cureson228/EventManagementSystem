@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../environments/environment.development';
 
 export interface AuthResponse {
   token: string,
@@ -19,7 +20,6 @@ export interface DecodedClaims {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = "https://localhost:7189/api";
   private curentUserSubject = new BehaviorSubject<string | null>(null);
   currentUser$ = this.curentUserSubject.asObservable();
 
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   register(formData: any){
-    return this.http.post<AuthResponse>(this.baseUrl + '/register', formData)
+    return this.http.post<AuthResponse>(environment.apiBaseUrl + '/register', formData)
     .pipe(tap((res)=>{
       localStorage.setItem('token', res.token);
       this.curentUserSubject.next(res.token);
@@ -60,15 +60,10 @@ export class AuthService {
   }
 
   login(formData: any) : Observable<AuthResponse>{
-    return this.http.post<AuthResponse>(this.baseUrl + '/login', formData)
+    return this.http.post<AuthResponse>(environment.apiBaseUrl + '/login', formData)
     .pipe(tap((res) =>{
       localStorage.setItem('token', res.token);
       this.curentUserSubject.next(res.token);
-    }),
-    catchError(err => {
-      console.error('Login error response:', err); 
-      this.toastr.error(err.error?.message || 'Login failed');
-      return throwError(() => err);
     })
   );
 }

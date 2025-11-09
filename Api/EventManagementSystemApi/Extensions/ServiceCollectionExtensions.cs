@@ -19,16 +19,17 @@ namespace EventManagementSystemApi.Extensions
 
         public static IServiceCollection InjectDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = $"Host={configuration["db"]}" +
+            Console.WriteLine("Here i am");
+            var connectionString = $"Host={configuration["DB_HOST"]}" +
                 $";Database={configuration["DB_NAME"]};" +
                 $"Username={configuration["DB_USER"]};Password={configuration["DB_PASSWORD"]}";
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString(connectionString));
+                options.UseNpgsql(connectionString);
             });
             services.AddDbContext<UserDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString(connectionString));
+                options.UseNpgsql(connectionString);
             });
 
             return services;

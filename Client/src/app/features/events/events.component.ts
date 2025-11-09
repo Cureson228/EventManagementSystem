@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { RouterLink } from "@angular/router";
 import { Event } from '../../core/models/event.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-events',
@@ -18,10 +19,11 @@ export class EventsComponent implements OnInit {
   visibleEvents: any[] = [];
   userId : string | null = null;
   isLoading = true;
-  constructor(private eventService : EventService, private authService : AuthService) {}
+  constructor(private eventService : EventService, private authService : AuthService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    console.log("LOW SKILL");
       this.userId = this.authService.getUserIdFromToken();
       
       this.eventService.getPublicEvents().subscribe({
@@ -30,7 +32,7 @@ export class EventsComponent implements OnInit {
           this.updateVisibleEvents();
           this.isLoading = false;
         },
-        error: (err) => console.error('Failed to load events', err)
+        error: (err) => this.toastr.error('Failed to load events', err)
       });
       this.updateVisibleEvents();
   }

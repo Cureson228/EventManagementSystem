@@ -6,6 +6,8 @@ using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddCustonServices()
     .InjectDbContexts(builder.Configuration)
     .AddCustomIdentity()
@@ -31,7 +33,6 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine("WTF");
         Console.WriteLine($"Ошибка при выполнении SeedData: {ex.Message}");
         throw;
     }

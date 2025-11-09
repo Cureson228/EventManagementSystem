@@ -19,7 +19,7 @@ services:
     build:
       context: ./Api/EventManagementSystemApi
       dockerfile: Dockerfile
-    restart: always
+    restart: no
     env_file:
       - .env
     environment:
