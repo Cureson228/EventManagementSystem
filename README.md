@@ -29,7 +29,7 @@ EventManagementSystem/
 
 Clone the repository:
 
-git clone https://github.com/yourusername/EventManagementSystem.git
+git clone https://github.com/Cureson228/EventManagementSystem.git
 cd EventManagementSystem
 
 
