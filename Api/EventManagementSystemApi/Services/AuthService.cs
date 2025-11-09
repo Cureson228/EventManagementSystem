@@ -64,7 +64,7 @@ namespace EventManagementSystemApi.Services
         public async Task<AuthResponseDto> GenerateTokenAsync(User user)
         {
 
-            var jwtSecret = _configuration["AppSettings:JWTSecret"];
+            var jwtSecret = _configuration["JWT_SECRET"];
 
             var claims = new ClaimsIdentity(new Claim[]
             {

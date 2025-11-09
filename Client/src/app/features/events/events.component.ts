@@ -21,6 +21,7 @@ export class EventsComponent implements OnInit {
   constructor(private eventService : EventService, private authService : AuthService) {}
 
   ngOnInit(): void {
+    console.log("LOW SKILL");
       this.userId = this.authService.getUserIdFromToken();
       
       this.eventService.getPublicEvents().subscribe({
