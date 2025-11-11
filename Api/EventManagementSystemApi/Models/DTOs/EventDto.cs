@@ -11,5 +11,6 @@
         public int? Capacity { get; set;}
         public bool Visibility { get; set; }
         public List<ParticipantDto> Participants { get; set; }
+        public List<string> EventTags { get; set; }
     }
 }

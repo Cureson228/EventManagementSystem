@@ -2,7 +2,6 @@
 using EventManagementSystemApi.Models.DTOs;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 using System.Security.Claims;
 
 namespace EventManagementSystemApi.Services
@@ -28,7 +27,6 @@ namespace EventManagementSystemApi.Services
                 throw new UnauthorizedAccessException("Error happened while accessing the user");
             }
 
-
             var newEvent = new Event
             {
                 Title = dto.Title,
@@ -37,11 +35,50 @@ namespace EventManagementSystemApi.Services
                 Location = dto.Location,
                 Capacity = dto.Capacity,
                 Visibility = Boolean.Parse(dto.Visibility),
-                CreatedByUserId = userId
+                CreatedByUserId = userId,
+                EventTags = new List<EventTag>()
                 
             };
 
+
+            if (dto.Tags != null && dto.Tags.Length > 0)
+            {
+                var normalizedTags = dto.Tags
+                    .Where(t => !string.IsNullOrEmpty(t))
+                    .Select(t => t.Trim().ToLower())
+                    .Distinct()
+                    .ToArray();
+
+                foreach(var normalizedTag in normalizedTags)
+                {
+                    var existingTag = await _context.Tags
+                        .FirstOrDefaultAsync(t => t.Name.ToLower() == normalizedTag);
+
+                    Tag tagEntity;
+
+                    if (existingTag != null)
+                    {
+                        tagEntity = existingTag;
+                    }
+                    else
+                    {
+                        tagEntity = new Tag() { Name = normalizedTag };
+                        _context.Tags.Add(tagEntity);
+                        await _context.SaveChangesAsync();
+                    }
+                    _context.EventsTags.Add(new EventTag
+                    {
+                        Event = newEvent,
+                        TagId = tagEntity.Id,
+                    });
+                   
+                }
+                 
+            }
+
+
             _context.Events.Add(newEvent);
+
 
             var participant = new Participant
             {
@@ -56,11 +93,38 @@ namespace EventManagementSystemApi.Services
             await _context.SaveChangesAsync(); 
             
         }
+        public async Task<string[]> GetAllTagsAsync()
+        {
+            return await _context.Tags
+                .Select(t => char.ToUpper(t.Name[0]) + t.Name.Substring(1).ToLower())
+                .ToArrayAsync();
+        }
+        public async Task<string[]> GetEventTagsAsync(int id)
+        {
+            return await _context.EventsTags.Where(et => et.EventId == id)
+                .Select(et => char.ToUpper(et.Tag.Name[0]) + et.Tag.Name.Substring(1).ToLower()).ToArrayAsync();  
+        }
 
-        public async Task<IEnumerable<EventDto>> GetPublicEventsAsync()
+        public async Task<IEnumerable<EventDto>> GetPublicEventsAsync(string[]? Tags = null)
         {
 
-            return await _context.Events
+            var query = _context.Events
+                .AsNoTracking()
+                .Include(e => e.Participants)
+                .Include(e => e.EventTags)
+                    .ThenInclude(et => et.Tag)
+                .Where(e => e.Visibility)
+                .AsQueryable();
+
+
+            if (Tags != null && Tags.Length > 0)
+            {
+                var toLowerTags = Tags.Select(t => t.ToLower()).ToArray();
+
+                query = query.Where(e => toLowerTags.All(tag => e.EventTags.Any(et => et.Tag.Name.ToLower() == tag)));
+            }
+
+            return await query
                 .Where(e => e.Visibility)
                 .Include(e => e.Participants)
                 .Select(e => new EventDto
@@ -105,7 +169,9 @@ namespace EventManagementSystemApi.Services
                         JoinedAt = p.JoinedAt,
                         FullName = p.FullName,
 
-                    }).ToList()
+                    }).ToList(),
+                    EventTags = e.EventTags.Select(et => et.Tag.Name).ToList()
+                    
                 }).FirstAsync();
 
             if (eventDetails == null)
@@ -117,7 +183,7 @@ namespace EventManagementSystemApi.Services
         }
         public async Task EditEventAsync(CreateEventDto dto, int id)
         {
-            var _event = await _context.Events.FindAsync(id);
+            var _event = await _context.Events.Include(e => e.EventTags).ThenInclude(et => et.Tag).FirstOrDefaultAsync(e => e.Id == id);
             if (_event  == null)
             {
                 throw new KeyNotFoundException("Event not found");
@@ -133,6 +199,41 @@ namespace EventManagementSystemApi.Services
             _event.DateTime = dto.DateTime;
             _event.Visibility = Boolean.Parse(dto.Visibility);
             _event.Capacity = dto.Capacity;
+            try
+            {
+                var existingTags = _event.EventTags.Select(et => et.Tag.Name.ToLower()).ToList();
+                var newTags = dto.Tags?.Select(t => t.ToLower()).ToList() ?? new List<string>();
+
+                var tagsToRemove = _event.EventTags.Where(et => !newTags.Contains(et.Tag.Name.ToLower())).ToList();
+
+                foreach (var et in tagsToRemove)
+                    _event.EventTags.Remove(et);
+
+                var tagsToAdd = newTags.Except(existingTags).ToList();
+                foreach (var tagName in tagsToAdd)
+                {
+                    var tagEntity = await _context.Tags
+                        .FirstOrDefaultAsync(t => t.Name.ToLower() == tagName);
+
+                    if (tagEntity == null)
+                    {
+                        tagEntity = new Tag { Name = tagName };
+                        _context.Tags.Add(tagEntity);
+                        await _context.SaveChangesAsync(); 
+                    }
+
+                    _event.EventTags.Add(new EventTag
+                    {
+                        Event = _event,
+                        TagId = tagEntity.Id
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
 
             await _context.SaveChangesAsync();
             
@@ -217,8 +318,6 @@ namespace EventManagementSystemApi.Services
 
             if (participant == null)
                 throw new ValidationException("User is not part of this event");
-
-
 
             _context.Participants.Remove(participant);
 

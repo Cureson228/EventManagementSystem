@@ -1,5 +1,6 @@
 ﻿using EventManagementSystemApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace EventManagementSystemApi.Extensions
 {
@@ -22,7 +23,15 @@ namespace EventManagementSystemApi.Extensions
                 entity.Property(property => property.DateTime).IsRequired();
 
 
-                entity.HasOne(property => property.CreatedByUser).WithMany(user => user.CreatedEvents).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(property => property.CreatedByUser)
+                .WithMany(user => user.CreatedEvents)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(e => e.EventTags)
+                .WithOne(et => et.Event)
+                .HasForeignKey(et => et.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+    
             });
         }
 
@@ -54,6 +63,43 @@ namespace EventManagementSystemApi.Extensions
                 
             });
             modelBuilder.Ignore<Event>().Ignore<Participant>();
+        }
+
+        public static void ConfigureEventTagModel(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EventTag>(entity =>
+            {
+                entity.HasKey(et => new { et.EventId, et.TagId });
+
+                entity.HasOne(e => e.Event)
+                .WithMany(e => e.EventTags)
+                .HasForeignKey(et => et.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(et => et.Tag)
+                .WithMany(t => t.EventTags)
+                .HasForeignKey(et => et.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
+
+        public static void ConfigureTagModel(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Tag>(entity =>
+            {
+                entity.HasKey(t => t.Id);
+
+                entity.Property(t => t.Name)
+                .IsRequired()
+                .HasMaxLength(20);
+
+                entity.HasIndex(t => t.Name).IsUnique();
+
+                entity.HasMany(t => t.EventTags)
+                .WithOne(et => et.Tag)
+                .HasForeignKey(t => t.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

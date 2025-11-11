@@ -13,6 +13,7 @@
         public User CreatedByUser { get; set; }
         
         public ICollection<Participant> Participants { get; set; }
+        public ICollection<EventTag> EventTags { get; set; }
 
 
     }

@@ -149,6 +149,29 @@ namespace EventManagementSystemApi.Data
                 });
 
                 appDbContext.Events.AddRange(event1, event2, event3);
+
+                await appDbContext.SaveChangesAsync();
+
+                var tag1 = new Tag { Name = "Podcast" };
+                var tag2 = new Tag { Name = "Business" };
+                var tag3 = new Tag { Name = "Tech" };
+
+                
+
+                appDbContext.Tags.AddRange(tag1, tag2, tag3);
+
+                await appDbContext.SaveChangesAsync();
+
+                var eventTags = new List<EventTag>()
+                {
+                    new EventTag {EventId = 1 , TagId = 1},
+                    new EventTag {EventId = 1, TagId = 2},
+                    new EventTag {EventId = 2, TagId = 3},
+                    new EventTag {EventId = 3 , TagId = 3},
+                };
+
+                appDbContext.EventsTags.AddRange(eventTags);
+
                 await appDbContext.SaveChangesAsync();
 
             }

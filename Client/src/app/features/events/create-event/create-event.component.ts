@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, MaxLengthValidator, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NumberRangeDirective } from '../../../core/directives/number-range.directive';
 import { EventService } from '../../../core/services/event.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-create-event',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NumberRangeDirective],
+  imports: [ReactiveFormsModule, CommonModule, NumberRangeDirective, RouterLink],
   templateUrl: './create-event.component.html',
   styles: ``
 })
@@ -47,9 +47,47 @@ export class CreateEventComponent {
     minutes: [0,Validators.required],
     location: ['',Validators.required],
     capacity: [null],
-    visibility: ['true', Validators.required]
+    visibility: ['true', Validators.required],
+    tags: this.formBuilder.array<string>([], [this.maxTagsValidator(5)])
   },{validators : this.futureDateValidator});
 
+  get tags() : FormArray{
+    return this.form.get('tags') as FormArray;
+  }
+
+  addTag(input : HTMLInputElement){
+    const value = input.value.trim();
+    if (!value)
+      return;
+
+    const lowerCaseValue = value.toLowerCase();
+
+    const existing = this.tags.value.map((t : string) => t.toLowerCase());
+
+    if (existing.includes(lowerCaseValue)){
+      this.toastr.warning('This tag already exists');
+      input.value = '';
+      return;
+    }
+
+    if (this.tags.length >= 5){
+      this.toastr.warning("You can add only up to 5 tags only");
+    }
+
+    this.tags.push(this.formBuilder.control(value));
+    input.value = '';
+  }
+
+  removeTag(index: number){
+    this.tags.removeAt(index);
+  }
+
+  maxTagsValidator(max: number){
+    return (control: AbstractControl) =>{
+      const arr = control as FormArray;
+      return arr.length > max ? {maxTags: true} : null;
+    }
+  }
 
   onSubmit(){
      if (this.form.invalid) {
@@ -66,10 +104,10 @@ export class CreateEventComponent {
       dateTime : dateTime.toISOString(),
       location: this.form.value.location,
       capacity : this.form.value.capacity,
-      visibility: this.form.value.visibility
+      visibility: this.form.value.visibility,
+      tags: this.form.value.tags
     };
     console.log(formData);
-    
     this.eventService.createEvent(formData).subscribe({
       next: () => {
         this.toastr.success("You've been successfully added a new event!");

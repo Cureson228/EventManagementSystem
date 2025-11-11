@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
@@ -15,8 +15,25 @@ export class EventService {
   createEvent(eventData: any): Observable<any>{
     return this.http.post(environment.apiBaseUrl + '/events/create', eventData);
   }
-  getPublicEvents() : Observable<any> {
-    return this.http.get<Event[]>(environment.apiBaseUrl + '/events');
+
+  getAllTags() : Observable<any>{
+    return this.http.get(environment.apiBaseUrl + '/events/tags');
+  }
+
+  getPublicEvents(tags? : string[] | null) : Observable<any> {
+    let params = new HttpParams();
+
+    if (tags && tags.length > 0){
+      tags.forEach(tag => {
+        params = params.append('tags', tag);
+      })
+    }
+
+    return this.http.get<Event[]>(environment.apiBaseUrl + '/events', {params});
+  }
+
+  getEventTags(id :number) : Observable<any>{
+    return this.http.get<string[]>(environment.apiBaseUrl + '/events/tags/' + id);
   }
   getEventDetails(id : number) : Observable<any> {
     return this.http.get<Event>(environment.apiBaseUrl + '/events/' + id)

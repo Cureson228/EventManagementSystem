@@ -1,107 +1,150 @@
-<div class="relative w-full py-8">
-  <div class="px-16">
-    <h2 class="text-3xl font-bold py-2">Discover Events</h2>
-    <p class="text-sm text-gray-600">Find and join exciting events happening around you</p>
-</div>
-  <div *ngIf="isLoading" class="text-center text-gray-500 mt-10">
+<div *ngIf="isLoading" class="text-center text-gray-500 mt-10">
   Loading events...
 </div>
 
-  <button
-    (click)="previous()"
-    class="absolute left-4 top-1/2 -translate-y-1/2 text-4xl text-gray-400 hover:text-gray-700 transition transform hover:scale-110 z-50">
-    &lt; 
-  </button>
-
-<div class="relative w-full py-8 overflow-visible">
-  <div class="overflow-visible px-16">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-      <div
-       [routerLink]="['/event', event.id]"
-        *ngFor="let event of visibleEvents"
-        class="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between cursor-pointer 
-               transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] 
-               hover:shadow-2xl border border-transparent hover:border-green-500 relative"
-      >
- 
-        <div class="absolute inset-0 opacity-0 group-hover:opacity-10 bg-green-500 transition duration-300"></div>
-
-        <div class="relative z-10">
-          <h3 class="text-lg font-bold mb-2 text-gray-800 group-hover:text-green-700 transition">
-            {{ event.title }}
-          </h3>
-
-          <p class="text-gray-600 mb-4 line-clamp-3">
-            {{ event.description }}
-          </p>
-
-          <div class="space-y-2 text-sm text-gray-500">
-            
-             <div class="flex items-center"> 
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-                   <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                   <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-               </svg> 
-               <span class="px-2">{{ event.dateTime | date:'d MMMM y' }}</span>
-             </div>
- 
-             <div class="flex items-center">
-               
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
-                 <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
-                 <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
-               </svg>
-               
-               <span class="px-2">{{ event.dateTime | date: 'HH:mm' }}</span>
-             
-             
-             </div>
-             <div class="flex items-center">
-
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
-                  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                </svg>
-                <span class="px-2">{{ event.location }}</span>
-               
-               </div>
-             <div class="flex items-center">
-              
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
-                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
-                </svg>
-              
-              
-              
-              <span class="px-2">{{ event.participants.length }} @if (event.capacity != null){ / } {{ event.capacity }} participants</span></div>
-
-          </div>
-        </div>
-        <button
-          (click)="joinEvent(event)"
-          [disabled]="hasJoined(event) || event.isFull"
-          [ngClass]="{
-            'bg-gray-400 cursor-not-allowed': hasJoined(event) || event.isFull,
-            'bg-green-600 hover:bg-green-700': !hasJoined(event) && !event.isFull
-          }"
-            class="mt-5 w-full text-white font-semibold py-2 rounded-xl transition"
-        >
-          <ng-container *ngIf="hasJoined(event); else notJoined">
-            Joined
-          </ng-container>
-          <ng-template #notJoined>
-            {{ event.isFull ? 'Full' : 'Join' }}
-          </ng-template>
-        </button>
-        
-      </div>
-    </div>
+<div *ngIf="!isLoading">
+  
+  <div *ngIf="events.length === 0 && !eventsExist"
+       class="text-center text-gray-500 mt-10 flex flex-col items-center gap-4">
+    <span>No event found. Be the one who organizes an event!</span>
+  
+    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium 
+                   flex items-center gap-2 transition duration-200 shadow-sm hover:shadow-md"
+                   routerLink="/create/event">
+      Create Event
+    </button>
   </div>
 
-  <button
-    (click)="next()"
-    class="absolute right-4 top-1/2 -translate-y-1/2 text-4xl text-gray-400 hover:text-gray-700 transition transform hover:scale-110">
-    &gt;
-  </button>
-</div>
+
+
+  <div *ngIf="visibleEvents.length > 0 || eventsExist" class="relative w-full py-8">
+    <div class="px-16">
+      <h2 class="text-3xl font-bold py-2">Discover Events</h2>
+      <p class="text-sm text-gray-600">Find and join exciting events happening around you</p>
+    </div>
   
+    <div class="flex flex-wrap gap-2 mb-4 mx-14 my-5">
+      <button *ngFor="let tag of tags" (click)="toggleTag(tag)"
+        class="px-3 py-1 rounded-full text-sm font-medium border transitions" [ngClass]="{
+        'bg-blue-500 text-white shadow-sm' : isSelectedTag(tag),
+        'bg-gray-100 text-gray-700 hover:bg-gray-200' : !isSelectedTag(tag)
+      }">
+        {{ tag.charAt(0).toUpperCase() + tag.slice(1)}}
+      </button>
+  
+      <button (click)="clearTags()" class="ml-2 px-3 py-1 bg-red-500 text-white rounded-full text-sm">
+        Clear Tags
+      </button>
+    </div>
+    
+    <div *ngIf="events.length === 0 && eventsExist"
+         class="mx-auto mt-10 p-6 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm text-center max-w-md flex flex-col items-center gap-2">
+      
+      <span class="text-4xl">⚠️</span>
+      
+      <h3 class="text-lg font-semibold text-yellow-800">
+        No events match the selected tags
+      </h3>
+      
+      <p class="text-sm text-gray-500">
+        Try selecting different tags or clear the filter to see all available events.
+      </p>
+    </div>
+    
+    <button (click)="previous()"
+      class="absolute left-4 top-1/2 -translate-y-1/2 text-4xl text-gray-400 hover:text-gray-700 transition transform hover:scale-110 z-50">
+      &lt;
+    </button>
+  
+    <div class="relative w-full py-8 overflow-visible">
+      <div class="overflow-visible px-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div [routerLink]="['/event', event.id]" *ngFor="let event of visibleEvents" class="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between cursor-pointer 
+                 transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] 
+                 hover:shadow-2xl border border-transparent hover:border-green-500 relative">
+  
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-10 bg-green-500 transition duration-300"></div>
+  
+            <div class="relative z-10">
+              <h3 class="text-lg font-bold mb-2 text-gray-800 group-hover:text-green-700 transition">
+                {{ event.title }}
+              </h3>
+  
+              <p class="text-gray-600 mb-4 line-clamp-3">
+                {{ event.description }}
+              </p>
+  
+              <div class="space-y-2 text-sm text-gray-500">
+  
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-calendar3" viewBox="0 0 16 16">
+                    <path
+                      d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z" />
+                    <path
+                      d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                  </svg>
+                  <span class="px-2">{{ event.dateTime | date:'d MMMM y' }}</span>
+                </div>
+  
+                <div class="flex items-center">
+  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock"
+                    viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
+                  </svg>
+  
+                  <span class="px-2">{{ event.dateTime | date: 'HH:mm' }}</span>
+  
+  
+                </div>
+                <div class="flex items-center">
+  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                  </svg>
+                  <span class="px-2">{{ event.location }}</span>
+  
+                </div>
+                <div class="flex items-center">
+  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-people-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                  </svg>
+  
+                  <span class="px-2">{{ event.participants.length }} @if (event.capacity != null){ / } {{ event.capacity
+                    }} participants</span>
+                </div>
+  
+              </div>
+            </div>
+            <button [disabled]="hasJoined(event) || event.isFull" [ngClass]="{
+                'bg-gray-400 cursor-not-allowed': hasJoined(event) || event.isFull,
+                'bg-green-600 hover:bg-green-700': !hasJoined(event) && !event.isFull
+              }" class="mt-5 w-full text-white font-semibold py-2 rounded-xl transition">
+              <ng-container *ngIf="hasJoined(event); else notJoined">
+                Joined
+              </ng-container>
+              <ng-template #notJoined>
+                {{ event.isFull ? 'Full' : 'Join' }}
+              </ng-template>
+            </button>
+  
+          </div>
+        </div>
+      </div>
+  
+      <button (click)="next()"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-4xl text-gray-400 hover:text-gray-700 transition transform hover:scale-110">
+        &gt;
+      </button>
+    </div>
+</div>
+
+
