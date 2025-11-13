@@ -281,6 +281,17 @@ namespace EventManagementSystemApi.Services
                     Capacity = e.Capacity,
                     CreatedByUserId = e.CreatedByUserId,
                     Visibility = e.Visibility,
+                    Participants = e.Participants.Select(p => new ParticipantDto
+                    {
+                        EventId = e.Id,
+                        UserId = p.UserId,
+                        JoinedAt = p.JoinedAt,
+                        FullName = p.FullName
+
+                    }).ToList(),
+                    EventTags =  e.EventTags
+                    .Select(et => char.ToUpper(et.Tag.Name[0]) + et.Tag.Name.Substring(1).ToLower()).ToList()
+
                 })
                 .ToListAsync();
         }

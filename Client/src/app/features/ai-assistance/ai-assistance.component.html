@@ -1,0 +1,29 @@
+<div class="fixed bottom-5 right-5 z-50">
+  <!-- Кнопка чату -->
+  <button *ngIf="!isOpen"
+          class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-blue-700"
+          (click)="openChat()">
+    💬
+  </button>
+
+  <div *ngIf="isOpen" class="w-80 h-96 bg-white rounded-xl shadow-xl flex flex-col">
+
+    <div class="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-xl">
+      <span>AI Assistant 🤖</span>
+      <button class="text-white font-bold" (click)="isOpen = false">×</button>
+    </div>
+
+
+    <div class="flex-1 overflow-y-auto p-3 space-y-2">
+      <div *ngFor="let msg of messages" [ngClass]="getMessageClass(msg.role)">
+        {{ msg.text }}
+      </div>
+    </div>
+
+    <div class="border-t border-gray-300 p-2 flex">
+      <input [(ngModel)]="question" placeholder="Ask about your events..." 
+             class="flex-1 border rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-300"/>
+      <button class="ml-2 bg-blue-600 text-white px-3 rounded hover:bg-blue-700" (click)="ask()">Send</button>
+    </div>
+  </div>
+</div>

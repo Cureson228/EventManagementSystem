@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace EventManagementSystemApi.Extensions
@@ -19,10 +20,10 @@ namespace EventManagementSystemApi.Extensions
 
         public static IServiceCollection InjectDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = /*$"Host={configuration["DB_HOST"]}" +
+            var connectionString = $"Host={configuration["DB_HOST"]}" +
                 $";Database={configuration["DB_NAME"]};" +
-                $"Username={configuration["DB_USER"]};Password={configuration["DB_PASSWORD"]}";*/
-                configuration.GetConnectionString("AppDbConnection");
+                $"Username={configuration["DB_USER"]};Password={configuration["DB_PASSWORD"]}";
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
@@ -90,6 +91,40 @@ namespace EventManagementSystemApi.Extensions
                 .Build();
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new() { Title = "EventManagementSystem API", Version = "v1" });
+
+                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter your JWT token below. Example: Bearer {your_token}"
+                });
+
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                    Array.Empty<string>()
+                    }
+                    });
+                });
             return services;
         }
     }

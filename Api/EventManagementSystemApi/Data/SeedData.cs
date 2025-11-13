@@ -20,8 +20,12 @@ namespace EventManagementSystemApi.Data
             var userManager = services.GetRequiredService<UserManager<User>>();
 
 
+
+            
+
             await userDbContext.Database.MigrateAsync();
             await appDbContext.Database.MigrateAsync();
+
 
             if (!userDbContext.Users.Any() && !appDbContext.Events.Any())
             {
