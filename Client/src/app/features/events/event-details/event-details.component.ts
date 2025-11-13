@@ -11,17 +11,11 @@ import { firstValueFrom } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './event-details.component.html',
-  styles: [`
-    .event-card {
-      @apply bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto mt-10;
-    }
-    .participant {
-      @apply flex items-center gap-3 bg-gray-100 rounded-xl px-4 py-2;
-    }
-  `]
+  styles: []
 })
 export class EventDetailsComponent implements OnInit {
   showConfirm = false;
+  eventTags : string[] = [];
   event: any;
   isLoading = true;
   isOrganizer = false;
@@ -71,7 +65,16 @@ export class EventDetailsComponent implements OnInit {
           this.router.navigateByUrl('/');
         }
       })
+      this.eventService.getEventTags(+id).subscribe({
+        next: (data) =>{
+          this.eventTags = data;
+        },
+        error: (err) => {
+          this.toastr.error('Failed to load tags', err);
+        }
+      })
     }
+    
   }
 
   openConfirmModal = () => this.showConfirm = true;

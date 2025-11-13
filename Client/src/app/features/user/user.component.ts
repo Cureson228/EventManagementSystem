@@ -56,6 +56,8 @@ import { trigger, transition, style, animate, query, group } from '@angular/anim
 
 export class UserComponent {
   getRouterOutletState(outlet: RouterOutlet) {
-    return outlet?.activatedRouteData?.['animation'];
+    return outlet && outlet.isActivated
+      ? outlet.activatedRouteData?.['animation']
+      : undefined;
   }
 }

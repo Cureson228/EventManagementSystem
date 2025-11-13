@@ -14,6 +14,7 @@ builder.Services.AddCustonServices()
     .AddCustomAuthefication(builder.Configuration)
     .AddCustomAuthorization();
 
+builder.Services.AddSwaggerConfiguration();
 builder.Services.AddControllers();
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -44,6 +45,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
 }
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();

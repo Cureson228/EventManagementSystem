@@ -8,6 +8,7 @@
         public string Location { get; set; }
         public int? Capacity { get; set; }
         public string Visibility { get; set; }
+        public string[]? Tags { get; set; }
 
     }
 }

@@ -24,10 +24,24 @@ namespace EventManagementSystemApi.Controllers
             return Ok();
         }
         [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> GetPublicEvents()
+        [HttpGet("tags")]
+        public async Task<IActionResult> GetAllTags()
         {
-            var eventList = await _eventService.GetPublicEventsAsync();
+            var tagsList = await _eventService.GetAllTagsAsync();
+            return Ok(tagsList);
+        }
+        [AllowAnonymous]
+        [HttpGet("tags/{id}")]
+        public async Task<IActionResult> GetEventTags([FromRoute]int id)
+        {
+            var eventTags = await _eventService.GetEventTagsAsync(id);
+            return Ok(eventTags);
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetPublicEvents([FromQuery]string[]? tags = null)
+        {
+            var eventList = await _eventService.GetPublicEventsAsync(tags);
             return Ok(eventList);
         }
         [AllowAnonymous]
@@ -40,7 +54,7 @@ namespace EventManagementSystemApi.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> EditEvent([FromBody] CreateEventDto dto, [FromRoute] int id)
         {
-            await _eventService.EditEventAsync(dto, id);
+            await _eventService.EditEventAsync(dto, id);        
             return Ok();
         }
         [HttpDelete("{id}")]

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup,ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup,ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { ToastrService } from 'ngx-toastr';
@@ -57,7 +57,8 @@ export class EditEventComponent implements OnInit {
       minutes: [0,Validators.required],
       location: ['',Validators.required],
       capacity: [null],
-      visibility: ['true', Validators.required]
+      visibility: ['true', Validators.required],
+      tags: this.formBuilder.array<string>([],[this.maxTagsValidator(5)])
     },{validators : this.futureDateValidator});
 
     this.eventId = +this.route.snapshot.paramMap.get('id')!;
@@ -72,9 +73,16 @@ export class EditEventComponent implements OnInit {
         this.form.patchValue({
           date: date.toISOString().slice(0,10),
           minutes: date.getMinutes(),
-          hours: date.getHours()
+          hours: date.getHours(),
         })
+        
+        const tagsArray = this.form.get('tags') as FormArray;
 
+        tagsArray.clear();
+
+        event.eventTags.forEach((tag : string) => {
+          tagsArray.push(this.formBuilder.control(tag));
+        });
         console.log(this.form.value);
         
         this.isLoading = false;
@@ -86,6 +94,43 @@ export class EditEventComponent implements OnInit {
     })
     
   }
+  get tags() : FormArray{
+      return this.form.get('tags') as FormArray;
+    }
+  
+    addTag(input : HTMLInputElement){
+      const value = input.value.trim();
+      if (!value)
+        return;
+  
+      const lowerCaseValue = value.toLowerCase();
+  
+      const existing = this.tags.value.map((t : string) => t.toLowerCase());
+  
+      if (existing.includes(lowerCaseValue)){
+        this.toastr.warning('This tag already exists');
+        input.value = '';
+        return;
+      }
+  
+      if (this.tags.length >= 5){
+        this.toastr.warning("You can add only up to 5 tags only");
+      }
+  
+      this.tags.push(this.formBuilder.control(value));
+      input.value = '';
+    }
+  
+    removeTag(index: number){
+      this.tags.removeAt(index);
+    }
+  
+    maxTagsValidator(max: number){
+      return (control: AbstractControl) =>{
+        const arr = control as FormArray;
+        return arr.length > max ? {maxTags: true} : null;
+      }
+    }
   onSubmit() : void{
     if (this.form.invalid){
       this.toastr.error("Please make sure inputs are valid before submitting");
@@ -102,7 +147,8 @@ export class EditEventComponent implements OnInit {
       dateTime : dateTime.toISOString(),
       location: this.form.value.location,
       capacity : this.form.value.capacity,
-      visibility: this.form.value.visibility
+      visibility: this.form.value.visibility,
+      tags: this.form.value.tags
     };
     console.log(formData);
     

@@ -8,7 +8,10 @@ namespace EventManagementSystemApi.Services
         
         Task CreateEventAsync(CreateEventDto dto);
 
-        Task<IEnumerable<EventDto>> GetPublicEventsAsync();
+        Task<string[]> GetAllTagsAsync();
+        Task<string[]> GetEventTagsAsync(int id);
+
+        Task<IEnumerable<EventDto>> GetPublicEventsAsync(string[]? Tags = null);
 
         Task<EventDto> GetEventDetailsAsync(int id);
         Task EditEventAsync(CreateEventDto dto, int id);
